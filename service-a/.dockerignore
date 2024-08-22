@@ -1,0 +1,42 @@
+# Node modules directory
+node_modules
+
+# Dockerfile and Docker Compose files
+Dockerfile
+docker-compose.yml
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Build artifacts
+dist
+build
+
+# Test files
+tests
+test
+
+# Source maps (optional)
+*.map
+
+# Git metadata
+.git
+.gitignore
+
+# NPM cache
+.npm
+
+# IDE and editor files
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Mac OS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db

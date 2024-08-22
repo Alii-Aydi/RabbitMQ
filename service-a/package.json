@@ -1,0 +1,41 @@
+{
+  "name": "service-a",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --watch src --watch package.json --ext ts,json --exec \"ts-node src/index.ts\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^22.4.1",
+    "amqplib": "^0.10.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "glob": "^11.0.0",
+    "inversify": "^6.0.2",
+    "inversify-binding-decorators": "^4.0.0",
+    "inversify-express-utils": "^6.4.6",
+    "inversify-inject-decorators": "^3.1.0",
+    "mongodb": "^5.9.2",
+    "nodemon": "^3.1.4",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
+    "tsyringe": "^4.8.0",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
