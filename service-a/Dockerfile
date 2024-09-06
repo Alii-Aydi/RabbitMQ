@@ -7,6 +7,8 @@ WORKDIR /service-a
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+RUN npm ci
+
 # Install dependencies
 RUN npm install
 
@@ -21,6 +23,8 @@ ENV NODE_ENV=development
 
 # Expose the application port
 EXPOSE 3000
+
+ENTRYPOINT ["nodemon", "--legacy-watch", "src/index.ts"]
 
 # Start the application using the `start` script defined in package.json
 CMD ["npm", "start"]

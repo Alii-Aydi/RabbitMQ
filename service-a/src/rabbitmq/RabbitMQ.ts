@@ -2,22 +2,15 @@ import 'dotenv/config';
 import amqp from 'amqplib';
 
 export class RabbitMQ {
-    private static instance: RabbitMQ;
     private connection!: amqp.Connection;
     private channels: { [key: string]: amqp.Channel } = {};
 
-    public constructor() { }
-
-    static getInstance(): RabbitMQ {
-        if (!RabbitMQ.instance) {
-            RabbitMQ.instance = new RabbitMQ();
-        }
-        return RabbitMQ.instance;
+    public constructor() {
+        console.log("URI:" + process.env.RABBITMQ_URI)
     }
 
-    static async connect(): Promise<void> {
-        const instance = RabbitMQ.getInstance();
-        if (instance.connection) {
+    async connect(): Promise<void> {
+        if (this.connection) {
             console.log('RabbitMQ is already connected');
             return;
         }
@@ -25,7 +18,7 @@ export class RabbitMQ {
         const rabbitMQUri: string = process.env.RABBITMQ_URI || 'amqp://localhost:5672';
 
         try {
-            instance.connection = await amqp.connect(rabbitMQUri,
+            this.connection = await amqp.connect(rabbitMQUri,
                 {
                     heartbeat: 60, // Heartbeat interval for connection monitoring
                     reconnect: true, // Enables reconnection
@@ -39,22 +32,35 @@ export class RabbitMQ {
         }
     }
 
-    static async close(): Promise<void> {
-        const instance = RabbitMQ.getInstance();
-        if (instance.connection) {
-            for (const channel of Object.values(instance.channels)) {
-                await channel.close();
+    async close(): Promise<void> {
+        if (this.connection) {
+            try {
+                for (const channel of Object.values(this.channels)) {
+                    await channel.close();
+                }
+                await this.connection.close();
+                console.log('RabbitMQ connection and channels closed');
+            } catch (error) {
+                console.error('Error closing RabbitMQ connection:', error);
             }
-            await instance.connection.close();
-            console.log('RabbitMQ connection and channels closed');
+        } else {
+            console.warn('No RabbitMQ connection to close');
         }
     }
 
     async getChannel(name: string): Promise<amqp.Channel> {
-        const instance = RabbitMQ.getInstance();
+        if (!this.connection) {
+            throw new Error('RabbitMQ connection not established');
+        }
+
         if (!this.channels[name]) {
-            this.channels[name] = await instance.connection.createChannel();
-            console.log(`Channel ${name} created`);
+            try {
+                this.channels[name] = await this.connection.createChannel();
+                console.log(`Channel ${name} created`);
+            } catch (error) {
+                console.error(`Failed to create channel ${name}:`, error);
+                throw error;
+            }
         }
         return this.channels[name];
     }
