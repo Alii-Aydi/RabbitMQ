@@ -1,28 +1,38 @@
-node_modules
-.log
+# Node.js
+node_modules/
+**/node_modules/
+
+# Log files
+*.log
+**/*.log
 
 # Environment variables
 .env
+**/.env
 
 # Docker
 docker-compose.override.yml
-.docker
+.docker/
 
 # Debugging
-.vscode
+.vscode/
+.idea/
 
 # Build and Output Directories
-dist
-build
+dist/
+build/
 
 # Generated files
-.lock
+*.lock
 package-lock.json
 yarn.lock
-.git
 
-# TypeORM
+# TypeORM config
 ormconfig.ts
 
 # Other
-*.png
+**.png
+
+# Git files (avoid committing .git)
+!.git
+
