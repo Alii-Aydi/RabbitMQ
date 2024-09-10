@@ -1,0 +1,28 @@
+node_modules
+.log
+
+# Environment variables
+.env
+
+# Docker
+docker-compose.override.yml
+.docker
+
+# Debugging
+.vscode
+
+# Build and Output Directories
+dist
+build
+
+# Generated files
+.lock
+package-lock.json
+yarn.lock
+.git
+
+# TypeORM
+ormconfig.ts
+
+# Other
+*.png
