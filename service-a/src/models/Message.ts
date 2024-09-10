@@ -1,8 +1,8 @@
-import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn } from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column, CreateDateColumn, BaseEntity } from 'typeorm';
 import { IsNotEmpty, Length, IsDate } from 'class-validator';
 
-@Entity()
-export class Message {
+@Entity("Messages")
+export class Message extends BaseEntity {
     @ObjectIdColumn()
     id!: ObjectId;
 

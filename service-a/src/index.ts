@@ -7,8 +7,13 @@ import { AppDataSource } from './config/database';
 import { RabbitMQ } from './rabbitmq/RabbitMQ';
 import messageRoutes from './routes/messageRoutes';
 import { container } from 'tsyringe'; // Import tsyringe container
+import { IMessageService } from 'interfaces/IMessageService';
 
 const app = express();
+
+// Injections
+const rabbitMQ = container.resolve(RabbitMQ);
+const messageService = container.resolve<IMessageService>('IMessageService');
 
 // Middleware
 app.use(express.json());
@@ -23,14 +28,20 @@ app.get("/", (req: Request, res: Response): void => {
 app.use('/api/messages', messageRoutes);
 
 AppDataSource.initialize().then(async () => {
-    // Resolve RabbitMQ instance from the container
-    const rabbitMQ = container.resolve(RabbitMQ);
+    console.log("AppDataSource initialized");
 
     // Connect to RabbitMQ
-    await rabbitMQ.connect();
+    rabbitMQ.connect().then(() => {
+        console.log('Connected to RabbitMQ');
+        messageService.consumeAndSaveMessage(process.env.SERVICE_A_QUEUE!);
+    }).catch((error: Error) => {
+        console.error('Failed to connect to RabbitMQ:', error);
+    });
+
+    const port = process.env.PORT || 3000;
 
     // Start the server
-    app.listen(3000, () => {
+    app.listen(port, () => {
         console.log('Service-A running on port 3000');
     });
 

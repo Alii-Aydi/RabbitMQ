@@ -3,6 +3,7 @@ version: '3.8'
 services:
   rabbitmq:
     image: "rabbitmq:management"
+    hostname: rabbitmq
     container_name: 'rabbitmq'
     ports:
       - "5672:5672"
@@ -11,16 +12,20 @@ services:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: yourpassword
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-        - rabbitmq_nodejs
+      - rabbitmq_nodejs
 
   mongodb:
     image: "mongo"
+    hostname: mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - rabbitmq_nodejs
 
   service-a:
     container_name: service-a
@@ -36,11 +41,34 @@ services:
     depends_on:
       - rabbitmq
       - mongodb
+    networks:
+      - rabbitmq_nodejs
+
+  service-b:
+    container_name: service-b
+    build:
+      context: ./service-b
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./service-b/.env
+    volumes:
+      - ./service-b:/service-b
+      - service-b-node-modules:/service-b/node_modules
+    depends_on:
+      - rabbitmq
+      - mongodb
+    networks:
+      - rabbitmq_nodejs
 
 volumes:
-  rabbitmq_data:
-    name: rabbitmq_data
   mongo_data:
     name: mongo_data
   service-a-node-modules:
     name: service-a-node-modules
+  service-b-node-modules:
+    name: service-b-node-modules
+
+networks:
+  rabbitmq_nodejs:
+    driver: bridge
